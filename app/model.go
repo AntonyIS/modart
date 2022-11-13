@@ -17,3 +17,4 @@ type Article struct {
 	Rate     int    `json:"rate"`
 	CreateAt int64  `json:"created_at"`
 }
+

@@ -35,9 +35,9 @@ func NewArticleService(articleRepo ArticleRepository) ArticleService {
 }
 
 // Author service methods
-func (a *authorService) Create(author *Author) error {
+func (a *authorService) Create(author *Author) (*Author, error) {
 	if err := validate.Validate(author); err != nil {
-		return errs.Wrap(ErrInvalid, "service.Author.Create")
+		return nil, errs.Wrap(ErrInvalid, "service.Author.Create")
 	}
 	author.Id = uuid.New().String()
 	return a.authorRepo.Create(author)
@@ -51,14 +51,14 @@ func (a *authorService) Update(author *Author) (*Author, error) {
 	return a.authorRepo.Update(author)
 }
 
-func (a *authorService) Delete(id string) (string, error) {
+func (a *authorService) Delete(id string) error {
 	return a.authorRepo.Delete(id)
 }
 
 // Article service methods
-func (a *articleService) Create(article *Article) error {
+func (a *articleService) Create(article *Article) (*Article, error) {
 	if err := validate.Validate(article); err != nil {
-		return errs.Wrap(ErrInvalid, "service.Article.Create")
+		return nil, errs.Wrap(ErrInvalid, "service.Article.Create")
 	}
 	article.Id = uuid.New().String()
 	article.CreateAt = time.Now().UTC().Unix()
@@ -73,6 +73,6 @@ func (a *articleService) Update(article *Article) (*Article, error) {
 	return a.articleRepo.Update(article)
 }
 
-func (a *articleService) Delete(id string) (string, error) {
+func (a *articleService) Delete(id string) error {
 	return a.articleRepo.Delete(id)
 }
