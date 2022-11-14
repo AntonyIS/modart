@@ -1,6 +1,9 @@
 package app
 
+import "github.com/jinzhu/gorm"
+
 type Author struct {
+	gorm.Model
 	Id        string    `json:"id"`
 	FirstName string    `json:"firstname"`
 	LastName  string    `json:"lastname"`
@@ -10,6 +13,7 @@ type Author struct {
 }
 
 type Article struct {
+	gorm.Model
 	Id       string `json:"id"`
 	Title    string `json:"title"`
 	Body     string `json:"body"`
@@ -17,4 +21,3 @@ type Article struct {
 	Rate     int    `json:"rate"`
 	CreateAt int64  `json:"created_at"`
 }
-
