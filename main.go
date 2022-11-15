@@ -4,16 +4,15 @@ import (
 	"fmt"
 
 	routes "github.com/AntonyIS/modart/api/http"
-	"github.com/gofiber/fiber"
 )
 
 func main() {
 	fmt.Println("Welcome to the Modular Art API ...")
+	// app := fiber.New()
 
-	app := fiber.New()
+	// routes.SetupFiberRoutes(app)
+	router := routes.SetupGinRouter()
 
-	routes.SetupRoutes(app)
-
-	app.Listen(5000)
+	router.Run(":5000")
 
 }

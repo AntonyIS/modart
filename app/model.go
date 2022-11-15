@@ -1,20 +1,35 @@
 package app
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+	uuid "github.com/satori/go.uuid"
+)
+
+type Base struct {
+	ID uuid.UUID `gorm:"type:char(36);primary_key"`
+}
+
+func (author *Author) BeforeCreate(scope *gorm.Scope) error {
+	return scope.SetColumn("ID", uuid.NewV4())
+}
+
+func (author *Article) BeforeCreate(scope *gorm.Scope) error {
+	return scope.SetColumn("ID", uuid.NewV4())
+}
 
 type Author struct {
-	gorm.Model
-	Id        string    `json:"id"`
+	Base
+
 	FirstName string    `json:"firstname"`
 	LastName  string    `json:"lastname"`
-	Email     string    `json:"eamil"`
+	Email     string    `json:"email"`
 	Password  string    `json:"password"`
-	Articles  []Article `json:"article"`
+	Articles  []Article `json:"articles"`
 }
 
 type Article struct {
-	gorm.Model
-	Id       string `json:"id"`
+	Base
+
 	Title    string `json:"title"`
 	Body     string `json:"body"`
 	Author   string `json:"author"`

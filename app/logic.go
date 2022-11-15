@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/google/uuid"
 	errs "github.com/pkg/errors"
 	"gopkg.in/dealancer/validate.v2"
 )
@@ -39,7 +38,7 @@ func (a *authorService) CreateAuthor(author *Author) (*Author, error) {
 	if err := validate.Validate(author); err != nil {
 		return nil, errs.Wrap(ErrInvalid, "service.Author.Create")
 	}
-	author.Id = uuid.New().String()
+	// author.ID = uuid.New().String()
 	return a.authorRepo.CreateAuthor(author)
 }
 
@@ -64,7 +63,7 @@ func (a *articleService) CreateArticle(article *Article) (*Article, error) {
 	if err := validate.Validate(article); err != nil {
 		return nil, errs.Wrap(ErrInvalid, "service.Article.Create")
 	}
-	article.Id = uuid.New().String()
+	// article.ID = uuid.New().String()
 	article.CreateAt = time.Now().UTC().Unix()
 	return a.articleRepo.CreateArticle(article)
 }
