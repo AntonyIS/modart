@@ -54,17 +54,17 @@ func NewAuthorRepository() (app.AuthorRepository, error) {
 	return repo, nil
 }
 
-// func NewArticleRepository() (app.ArticleRepository, error) {
-// 	repo := postgresRepository{}
-// 	db, err := newPostgresDB()
-// 	if err != nil {
-// 		return nil, err
-// 	}
+func NewArticleRepository() (app.ArticleRepository, error) {
+	repo := postgresRepository{}
+	db, err := newPostgresDB()
+	if err != nil {
+		return nil, err
+	}
 
-// 	repo.db = db
-// 	repo.db.AutoMigrate(app.Article{})
-// 	return repo, nil
-// }
+	repo.db = db
+	repo.db.AutoMigrate(app.Article{})
+	return repo, nil
+}
 
 func (repo postgresRepository) CreateAuthor(author *app.Author) (*app.Author, error) {
 	password, err := author.GenerateHashPassord()
@@ -110,8 +110,8 @@ func (repo postgresRepository) UpdateAuthor(author *app.Author) (*app.Author, er
 }
 
 func (repo postgresRepository) DeleteAuthor(id string) error {
-	var deletedauthor app.Author
-	result := repo.db.Where("id = ?", id).Delete(&deletedauthor)
+	var deletedAuthor app.Author
+	result := repo.db.Where("id = ?", id).Delete(&deletedAuthor)
 	if result.RowsAffected == 0 {
 		return errors.New("author data not deleted")
 	}
@@ -129,15 +129,12 @@ func (repo postgresRepository) CreateArticle(article *app.Article) (*app.Article
 }
 
 func (repo postgresRepository) ReadArticle(id string) (*app.Article, error) {
-
-	var article *app.Article
-
-	res := repo.db.First(article, "id = ?", id)
-
+	var article app.Article
+	res := repo.db.First(&article, id)
 	if res.RowsAffected == 0 {
-		return nil, errors.New("article not found")
+		return nil, nil
 	}
-	return article, nil
+	return &article, nil
 }
 
 func (repo postgresRepository) ReadArticleAll() ([]*app.Article, error) {
@@ -153,28 +150,19 @@ func (repo postgresRepository) ReadArticleAll() ([]*app.Article, error) {
 
 func (repo postgresRepository) UpdateArticle(article *app.Article) (*app.Article, error) {
 
-	var _author app.Article
-	res := repo.db.First(&_author, "id = ?", article.ID)
-
-	if res.RowsAffected == 0 {
-		return nil, errors.New("article not found")
+	var updateArticle app.Article
+	result := repo.db.Model(&updateArticle).Where("id = ?", article.ID).Updates(article)
+	if result.RowsAffected == 0 {
+		return &app.Article{}, errors.New("author not updated")
 	}
-
-	res = repo.db.Model(_author).Where("id = ?", article.ID).Updates(_author)
-
-	if res.RowsAffected == 0 {
-		return nil, errors.New("error updating article")
-	}
-	return article, nil
+	return &updateArticle, nil
 }
 
 func (repo postgresRepository) DeleteArticle(id string) error {
-
-	var article app.Article
-	res := repo.db.Where("id = ?", id).Delete(&article)
-
-	if res.RowsAffected == 0 {
-		return errors.New("article not deleted")
+	var deletedArticle app.Author
+	result := repo.db.Where("id = ?", id).Delete(&deletedArticle)
+	if result.RowsAffected == 0 {
+		return errors.New("article data not deleted")
 	}
 	return nil
 }
