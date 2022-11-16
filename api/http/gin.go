@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -15,7 +14,7 @@ type GinRoutehandler interface {
 	GetAll(*gin.Context)
 	Post(*gin.Context)
 	Put(*gin.Context)
-	// Delete(*gin.Context)
+	Delete(*gin.Context)
 }
 
 type ginAuthorHandler struct {
@@ -98,7 +97,7 @@ func (a ginAuthorHandler) Put(c *gin.Context) {
 	}
 
 	res, err := a.authorService.UpdateAuthor(&author)
-	fmt.Println(res)
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
@@ -112,6 +111,14 @@ func (a ginAuthorHandler) Put(c *gin.Context) {
 	return
 }
 
+func (a ginAuthorHandler) Delete(c *gin.Context) {
+	id := c.Param("id")
+	res := a.authorService.DeleteAuthor(id)
+	c.JSON(http.StatusCreated, gin.H{
+		"author": res,
+	})
+
+}
 func SetupGinRouter() *gin.Engine {
 
 	router := gin.Default()
@@ -132,6 +139,7 @@ func SetupGinRouter() *gin.Engine {
 	router.GET("/api/v1/authors/:id", handler.Get)
 	router.POST("/api/v1/authors", handler.Post)
 	router.PUT("/api/v1/authors/:id", handler.Put)
+	router.DELETE("/api/v1/authors/:id", handler.Delete)
 
 	return router
 }

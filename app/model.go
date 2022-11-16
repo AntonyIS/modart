@@ -1,25 +1,11 @@
 package app
 
 import (
-	"github.com/jinzhu/gorm"
-	uuid "github.com/satori/go.uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
-type Base struct {
-	ID uuid.UUID `gorm:"type:char(36);primary_key"`
-}
-
-func (author *Author) BeforeCreate(scope *gorm.Scope) error {
-	return scope.SetColumn("ID", uuid.NewV4())
-}
-
-func (author *Article) BeforeCreate(scope *gorm.Scope) error {
-	return scope.SetColumn("ID", uuid.NewV4())
-}
-
 type Author struct {
-	Base
-
+	ID        uint32    `gorm:"primary_key;auto_increment" json:"id"`
 	FirstName string    `json:"firstname"`
 	LastName  string    `json:"lastname"`
 	Email     string    `json:"email"`
@@ -28,11 +14,18 @@ type Author struct {
 }
 
 type Article struct {
-	Base
-
+	ID       uint32 `gorm:"primary_key;auto_increment" json:"id"`
 	Title    string `json:"title"`
 	Body     string `json:"body"`
 	Author   string `json:"author"`
 	Rate     int    `json:"rate"`
 	CreateAt int64  `json:"created_at"`
+}
+
+func (a Author) GenerateHashPassord() (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(a.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashedPassword), nil
 }

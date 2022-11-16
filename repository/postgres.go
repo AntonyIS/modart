@@ -67,7 +67,11 @@ func NewAuthorRepository() (app.AuthorRepository, error) {
 // }
 
 func (repo postgresRepository) CreateAuthor(author *app.Author) (*app.Author, error) {
-
+	password, err := author.GenerateHashPassord()
+	if err != nil {
+		return nil, errors.New("error harshing password")
+	}
+	author.Password = password
 	res := repo.db.Create(&author)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("attendee not created")
@@ -76,17 +80,12 @@ func (repo postgresRepository) CreateAuthor(author *app.Author) (*app.Author, er
 }
 
 func (repo postgresRepository) ReadAuthor(id string) (*app.Author, error) {
-
-	var author *app.Author
-
-	res := repo.db.First(author, "ID = ?", id)
-	fmt.Println(res)
+	var author app.Author
+	res := repo.db.First(&author, id)
 	if res.RowsAffected == 0 {
-
 		return nil, nil
 	}
-
-	return author, nil
+	return &author, nil
 }
 
 func (repo postgresRepository) ReadAuthorAll() ([]*app.Author, error) {
@@ -102,28 +101,19 @@ func (repo postgresRepository) ReadAuthorAll() ([]*app.Author, error) {
 }
 
 func (repo postgresRepository) UpdateAuthor(author *app.Author) (*app.Author, error) {
-
 	var updateAuthor app.Author
-	res := repo.db.First(&updateAuthor, "ID = ?", author.ID)
-	if res.RowsAffected == 0 {
-		return nil, errors.New(res.Error.Error())
-	}
-
-	res = repo.db.Model(updateAuthor).Where("ID = ?", author.ID).Updates(author)
-
-	if res.RowsAffected == 0 {
-		return nil, errors.New(res.Error.Error())
+	result := repo.db.Model(&updateAuthor).Where("id = ?", author.ID).Updates(author)
+	if result.RowsAffected == 0 {
+		return &app.Author{}, errors.New("author not updated")
 	}
 	return &updateAuthor, nil
 }
 
 func (repo postgresRepository) DeleteAuthor(id string) error {
-
-	var author app.Author
-	res := repo.db.Where("id = ?", id).Delete(&author)
-
-	if res.RowsAffected == 0 {
-		return errors.New("author not deleted")
+	var deletedauthor app.Author
+	result := repo.db.Where("id = ?", id).Delete(&deletedauthor)
+	if result.RowsAffected == 0 {
+		return errors.New("author data not deleted")
 	}
 	return nil
 }
