@@ -5,7 +5,7 @@ import (
 )
 
 type Author struct {
-	ID        uint32    `gorm:"primary_key;auto_increment" json:"id"`
+	ID        string    `json:"id"`
 	FirstName string    `json:"firstname"`
 	LastName  string    `json:"lastname"`
 	Email     string    `json:"email"`
@@ -14,8 +14,8 @@ type Author struct {
 }
 
 type Article struct {
-	ID       uint32 `gorm:"primary_key;auto_increment" json:"id"`
-	AuthorID uint32 `gorm:"primary_key;auto_increment" json:"author_id"`
+	ID       string `json:"id"`
+	AuthorID string `json:"author_id"`
 	Title    string `json:"title"`
 	Body     string `json:"body"`
 	Author   string `json:"author"`

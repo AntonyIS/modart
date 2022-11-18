@@ -1,15 +1,16 @@
 version : '3'
 services:
-  app:
+  api:
     container_name: modart
-    build: .
+    build:
+      context: ./modart-server
     ports:
       - 5000:5000
     networks:
       - modart-net
     restart: on-failure
     volumes:
-      - .:/app
+      - .:/api
     depends_on:
       - postgresdb
     environment:
@@ -18,6 +19,18 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - DATABASE_HOST=${DB_HOST}
       - DATABASE_PORT=${DB_PORT}
+
+  client:
+    build:
+      context: ./modart-client
+    ports:
+      - "3000:3000"
+    container_name: react-ui
+    stdin_open: true
+    volumes:
+       - ./my-app:/usr/src/app/my-app
+       - /usr/src/app/my-app/node_modules
+   
 
   postgresdb:
     image: postgres:latest
@@ -35,7 +48,7 @@ services:
       - DATABASE_HOST=${DB_HOST}
 
 volumes:
-  app:
+  api:
   database_postgres: 
 
 networks:

@@ -4,9 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/AntonyIS/modart/app"
-	"github.com/AntonyIS/modart/repository"
+	"example.com/modart-server/app"
+	"example.com/modart-server/repository"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 )
 
 type GinRoutehandler interface {
@@ -74,16 +75,13 @@ func (a ginAuthorHandler) Get(c *gin.Context) {
 
 func (a ginAuthorHandler) Post(c *gin.Context) {
 	var author app.Author
-
 	if err := c.ShouldBindJSON(&author); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
 		})
 		return
 	}
-
 	res, err := a.authorService.CreateAuthor(&author)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
@@ -99,16 +97,13 @@ func (a ginAuthorHandler) Post(c *gin.Context) {
 
 func (a ginAuthorHandler) Put(c *gin.Context) {
 	var author app.Author
-
 	if err := c.ShouldBindJSON(&author); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
 		})
 		return
 	}
-
 	res, err := a.authorService.UpdateAuthor(&author)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
@@ -168,7 +163,6 @@ func (a ginArticleHandler) Get(c *gin.Context) {
 
 func (a ginArticleHandler) Post(c *gin.Context) {
 	var article app.Article
-
 	if err := c.ShouldBindJSON(&article); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
@@ -177,7 +171,6 @@ func (a ginArticleHandler) Post(c *gin.Context) {
 	}
 
 	res, err := a.articleService.CreateArticle(&article)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
@@ -193,23 +186,19 @@ func (a ginArticleHandler) Post(c *gin.Context) {
 
 func (a ginArticleHandler) Put(c *gin.Context) {
 	var article app.Article
-
 	if err := c.ShouldBindJSON(&article); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
 		})
 		return
 	}
-
 	res, err := a.articleService.UpdateArticle(&article)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
 		})
 		return
 	}
-
 	c.JSON(http.StatusCreated, gin.H{
 		"author": res,
 	})
@@ -225,12 +214,16 @@ func (a ginArticleHandler) Delete(c *gin.Context) {
 
 }
 func SetupGinRouter() *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
 
 	router := gin.Default()
+	router.Use(cors.Default())
 	authorRepo, err := repository.NewAuthorRepository()
+
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	articleRepo, err := repository.NewArticleRepository()
 	if err != nil {
 		log.Fatal(err)

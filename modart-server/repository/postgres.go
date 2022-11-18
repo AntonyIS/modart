@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/AntonyIS/modart/app"
-	config "github.com/AntonyIS/modart/config"
+	"example.com/modart-server/app"
+	config "example.com/modart-server/config"
+	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -72,6 +73,7 @@ func (repo postgresRepository) CreateAuthor(author *app.Author) (*app.Author, er
 		return nil, errors.New("error harshing password")
 	}
 	author.Password = password
+	author.ID = uuid.New().String()
 	res := repo.db.Create(&author)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("attendee not created")
@@ -89,14 +91,11 @@ func (repo postgresRepository) ReadAuthor(id string) (*app.Author, error) {
 }
 
 func (repo postgresRepository) ReadAuthorAll() ([]*app.Author, error) {
-
 	var authors []*app.Author
 	res := repo.db.Find(&authors)
-
 	if res.Error != nil {
 		return nil, errors.New("authors not found")
 	}
-
 	return authors, nil
 }
 
@@ -119,7 +118,7 @@ func (repo postgresRepository) DeleteAuthor(id string) error {
 }
 
 func (repo postgresRepository) CreateArticle(article *app.Article) (*app.Article, error) {
-
+	article.ID = uuid.New().String()
 	res := repo.db.Create(&article)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("attendee not created")
@@ -138,10 +137,8 @@ func (repo postgresRepository) ReadArticle(id string) (*app.Article, error) {
 }
 
 func (repo postgresRepository) ReadArticleAll() ([]*app.Article, error) {
-
 	var articles []*app.Article
 	res := repo.db.Find(&articles)
-
 	if res.Error != nil {
 		return nil, errors.New("authors not found")
 	}
@@ -149,7 +146,6 @@ func (repo postgresRepository) ReadArticleAll() ([]*app.Article, error) {
 }
 
 func (repo postgresRepository) UpdateArticle(article *app.Article) (*app.Article, error) {
-
 	var updateArticle app.Article
 	result := repo.db.Model(&updateArticle).Where("id = ?", article.ID).Updates(article)
 	if result.RowsAffected == 0 {
