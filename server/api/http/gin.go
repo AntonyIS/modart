@@ -4,10 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"example.com/modart-server/app"
-	"example.com/modart-server/repository"
-	"github.com/gin-gonic/gin"
+	"example.com/server/app"
+	"example.com/server/repository"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 type GinRoutehandler interface {
@@ -207,9 +207,14 @@ func (a ginArticleHandler) Put(c *gin.Context) {
 
 func (a ginArticleHandler) Delete(c *gin.Context) {
 	id := c.Param("id")
-	res := a.articleService.DeleteArticle(id)
+	err := a.articleService.DeleteArticle(id)
+	if err != nil {
+		c.JSON(http.StatusCreated, gin.H{
+			"error": "article not deleted",
+		})
+	}
 	c.JSON(http.StatusCreated, gin.H{
-		"author": res,
+		"message": "article deleted successfully",
 	})
 
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	routes "example.com/modart-server/api/http"
+	routes "example.com/server/api/http"
 )
 
 func main() {
