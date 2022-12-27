@@ -4,13 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"example.com/modart/app"
-	config "example.com/modart/config"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/joho/godotenv"
 )
 
 var DB *gorm.DB
@@ -21,12 +22,17 @@ type postgresRepository struct {
 }
 
 func newPostgresDB() (*gorm.DB, error) {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file", err)
+	}
+
 	var (
-		host     = config.GetEnvVariable("DB_HOST")
-		port     = config.GetEnvVariable("DB_PORT")
-		user     = config.GetEnvVariable("DB_USER")
-		dbname   = config.GetEnvVariable("DB_NAME")
-		password = config.GetEnvVariable("DB_PASSWORD")
+		host     = os.Getenv("DB_HOST")
+		port     = os.Getenv("DB_PORT")
+		user     = os.Getenv("DB_USER")
+		dbname   = os.Getenv("DB_NAME")
+		password = os.Getenv("DB_PASSWORD")
 	)
 
 	conn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
