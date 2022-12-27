@@ -1,16 +1,15 @@
 package app
 
-type AuthorService interface {
+type AppService interface {
+	LoginAuthor(email string) (*Author, error)
 	CreateAuthor(author *Author) (*Author, error)
 	ReadAuthor(id string) (*Author, error)
-	ReadAuthorAll() ([]*Author, error)
+	ReadAuthors() ([]*Author, error)
 	UpdateAuthor(author *Author) (*Author, error)
 	DeleteAuthor(id string) error
-}
-type ArticleService interface {
 	CreateArticle(Article *Article) (*Article, error)
 	ReadArticle(id string) (*Article, error)
-	ReadArticleAll() ([]*Article, error)
+	ReadArticles() ([]*Article, error)
 	UpdateArticle(Article *Article) (*Article, error)
 	DeleteArticle(id string) error
 }

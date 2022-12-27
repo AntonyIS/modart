@@ -9,8 +9,8 @@ import (
 func main() {
 	fmt.Println("Welcome to the Modular Art API ...")
 
-	router := routes.SetupGinRouter()
+	r := routes.SetupGinRouter()
 
-	router.Run(":5000")
+	r.Run(":5000")
 
 }

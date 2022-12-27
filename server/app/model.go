@@ -18,7 +18,7 @@ type Author struct {
 type Article struct {
 	gorm.Model
 	ArticleID string `gorm:"primaryKey;autoIncrement:false" json:"article_id"`
-	AuthorID  string `gorm:"primaryKey;autoIncrement:false" json:"author_id"`
+	AuthorID  string `json:"author_id"`
 	Title     string `json:"title"`
 	Body      string `json:"body"`
 	Author    string `json:"author"`
@@ -32,4 +32,9 @@ func (a Author) GenerateHashPassord() (string, error) {
 		return "", err
 	}
 	return string(hashedPassword), nil
+}
+
+func (a Author) CheckPasswordHarsh(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(a.Password), []byte(password))
+	return err == nil
 }

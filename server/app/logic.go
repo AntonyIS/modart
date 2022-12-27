@@ -13,72 +13,68 @@ var (
 	ErrInvalid  = errors.New("item invalid")
 )
 
-type authorService struct {
-	authorRepo AuthorRepository
+type appService struct {
+	appRepo AppRepository
 }
 
-type articleService struct {
-	articleRepo ArticleRepository
-}
-
-func NewAuthorService(authorRepo AuthorRepository) AuthorService {
-	return &authorService{
-		authorRepo,
-	}
-}
-
-func NewArticleService(articleRepo ArticleRepository) ArticleService {
-	return &articleService{
-		articleRepo,
+func NewItemService(appRepo AppRepository) AppService {
+	return &appService{
+		appRepo,
 	}
 }
 
 // Author service methods
-func (a *authorService) CreateAuthor(author *Author) (*Author, error) {
+func (a *appService) CreateAuthor(author *Author) (*Author, error) {
 	if err := validate.Validate(author); err != nil {
 		return nil, errs.Wrap(ErrInvalid, "service.Author.Create")
 	}
 	// author.ID = uuid.New().String()
-	return a.authorRepo.CreateAuthor(author)
+	return a.appRepo.CreateAuthor(author)
 }
 
-func (a *authorService) ReadAuthor(id string) (*Author, error) {
-	return a.authorRepo.ReadAuthor(id)
+func (a *appService) LoginAuthor(email string) (*Author, error) {
+	// author.ID = uuid.New().String()
+	return a.appRepo.LoginAuthor(email)
 }
 
-func (a *authorService) ReadAuthorAll() ([]*Author, error) {
-	return a.authorRepo.ReadAuthorAll()
+func (a *appService) ReadAuthor(id string) (*Author, error) {
+	return a.appRepo.ReadAuthor(id)
 }
 
-func (a *authorService) UpdateAuthor(author *Author) (*Author, error) {
-	return a.authorRepo.UpdateAuthor(author)
+func (a *appService) ReadAuthors() ([]*Author, error) {
+	return a.appRepo.ReadAuthors()
 }
 
-func (a *authorService) DeleteAuthor(id string) error {
-	return a.authorRepo.DeleteAuthor(id)
+func (a *appService) UpdateAuthor(author *Author) (*Author, error) {
+	return a.appRepo.UpdateAuthor(author)
+}
+
+func (a *appService) DeleteAuthor(id string) error {
+	return a.appRepo.DeleteAuthor(id)
 }
 
 // Article service methods
-func (a *articleService) CreateArticle(article *Article) (*Article, error) {
+func (a *appService) CreateArticle(article *Article) (*Article, error) {
 	if err := validate.Validate(article); err != nil {
 		return nil, errs.Wrap(ErrInvalid, "service.Article.Create")
 	}
 	// article.ID = uuid.New().String()
 	article.CreateAt = time.Now().UTC().Unix()
-	return a.articleRepo.CreateArticle(article)
+	return a.appRepo.CreateArticle(article)
 }
 
-func (a *articleService) ReadArticle(id string) (*Article, error) {
-	return a.articleRepo.ReadArticle(id)
+func (a *appService) ReadArticle(id string) (*Article, error) {
+	return a.appRepo.ReadArticle(id)
 }
 
-func (a *articleService) ReadArticleAll() ([]*Article, error) {
-	return a.articleRepo.ReadArticleAll()
-}
-func (a *articleService) UpdateArticle(article *Article) (*Article, error) {
-	return a.articleRepo.UpdateArticle(article)
+func (a *appService) ReadArticles() ([]*Article, error) {
+	return a.appRepo.ReadArticles()
 }
 
-func (a *articleService) DeleteArticle(id string) error {
-	return a.articleRepo.DeleteArticle(id)
+func (a *appService) UpdateArticle(article *Article) (*Article, error) {
+	return a.appRepo.UpdateArticle(article)
+}
+
+func (a *appService) DeleteArticle(id string) error {
+	return a.appRepo.DeleteArticle(id)
 }
