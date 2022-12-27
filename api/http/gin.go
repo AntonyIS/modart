@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/AntonyIS/modart/app"
-	"github.com/AntonyIS/modart/repository"
+	"example.com/modart/app"
+	"example.com/modart/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 )

@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/AntonyIS/modartapp"
-	config "github.com/AntonyIS/modartconfig"
+	"example.com/modart/app"
+	config "example.com/modart/config"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
