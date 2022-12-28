@@ -3,7 +3,7 @@ services:
   server:
     container_name: modart-server
     build:
-      context: ./server
+      context: .
     ports:
       - 5000:5000
     networks:
@@ -12,7 +12,7 @@ services:
     volumes:
       - .:/server
     depends_on:
-      - postgresdb
+      - modart-postgres
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -20,22 +20,9 @@ services:
       - DATABASE_HOST=${DB_HOST2}
       - DATABASE_PORT=${DB_PORT}
 
-  client:
-      build:
-        context: ./client
-      container_name: modart-client
-      ports:
-        - 3000:3000
-      volumes:
-        - ./client:/client/client
-        - /client/app/node_modules
-      networks:
-        - modart-net
-   
-
-  postgresdb:
+  modart-postgres:
     image: postgres:latest
-    container_name: postgresdb
+    container_name: modart-postgres
     ports:
       - 5432:5432
     networks:

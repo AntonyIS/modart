@@ -27,20 +27,14 @@ func newPostgresDB() (*gorm.DB, error) {
 		log.Fatal("Error loading .env file", err)
 	}
 
-	var (
-		host     = os.Getenv("DB_HOST")
-		port     = os.Getenv("DB_PORT")
-		user     = os.Getenv("DB_USER")
-		dbname   = os.Getenv("DB_NAME")
-		password = os.Getenv("DB_PASSWORD")
-	)
+	var ()
 
 	conn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		host,
-		port,
-		user,
-		dbname,
-		password,
+		os.Getenv("DB_HOST2"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_NAME"),
+		os.Getenv("DB_PASSWORD"),
 	)
 
 	db, err := gorm.Open("postgres", conn)
