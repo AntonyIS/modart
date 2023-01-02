@@ -1,14 +1,11 @@
 package main
 
 import (
-	"fmt"
-
 	routes "example.com/modart/api"
 )
 
 func main() {
-	fmt.Println("Welcome to the Modular Art API ...")
-	r := routes.SetupGinRouter()
+	r := routes.InitGinRoute()
 	r.Run(":5000")
 
 }

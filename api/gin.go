@@ -170,14 +170,14 @@ func (a ginHandler) GetArticle(c *gin.Context) {
 	article, err := a.appService.ReadArticle(id)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusNotFound, gin.H{
 			"err": err.Error(),
 		})
 		return
 	}
 	if article == nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"message": "author not found",
+			"message": "article not found",
 		})
 		return
 	}
@@ -226,7 +226,7 @@ func (a ginHandler) PutArticle(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{
-		"author": res,
+		"article": res,
 	})
 	return
 }
@@ -245,7 +245,7 @@ func (a ginHandler) DeleteArticle(c *gin.Context) {
 	})
 
 }
-func SetupGinRouter() *gin.Engine {
+func InitGinRoute() *gin.Engine {
 	// gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	// r.Use(cors.Default())
