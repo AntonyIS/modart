@@ -10,7 +10,7 @@ services:
       - modart-net
     restart: on-failure
     volumes:
-      - .:/server
+      - .:/modart-server
     depends_on:
       - modart-postgres
     environment:

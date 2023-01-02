@@ -40,7 +40,7 @@ func (a ginHandler) GetUsers(c *gin.Context) {
 	authors, err := a.appService.ReadAuthors()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err,
+			"err": err.Error(),
 		})
 		return
 	}
@@ -54,7 +54,7 @@ func (a ginHandler) GetUser(c *gin.Context) {
 	author, err := a.appService.ReadAuthor(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err,
+			"err": err.Error(),
 		})
 		return
 	}
@@ -65,7 +65,7 @@ func (a ginHandler) GetUser(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"author": author,
+		"": author,
 	})
 	return
 }
@@ -75,7 +75,7 @@ func (a ginHandler) LoginUser(c *gin.Context) {
 	author, err := a.appService.LoginAuthor(email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err,
+			"err": err.Error(),
 		})
 		return
 	}
@@ -103,20 +103,20 @@ func (a ginHandler) PostUser(c *gin.Context) {
 	var author app.Author
 	if err := c.ShouldBindJSON(&author); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 	res, err := a.appService.CreateAuthor(&author)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"author": res,
+		"user": res,
 	})
 	return
 }
@@ -125,20 +125,20 @@ func (a ginHandler) PutUser(c *gin.Context) {
 	var author app.Author
 	if err := c.ShouldBindJSON(&author); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 	res, err := a.appService.UpdateAuthor(&author)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"author": res,
+		"user": res,
 	})
 	return
 }
@@ -156,7 +156,7 @@ func (a ginHandler) GetArticles(c *gin.Context) {
 	articles, err := a.appService.ReadArticles()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err,
+			"err": err.Error(),
 		})
 		return
 	}
@@ -168,9 +168,10 @@ func (a ginHandler) GetArticles(c *gin.Context) {
 func (a ginHandler) GetArticle(c *gin.Context) {
 	id := c.Param("id")
 	article, err := a.appService.ReadArticle(id)
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err,
+			"err": err.Error(),
 		})
 		return
 	}
@@ -190,7 +191,7 @@ func (a ginHandler) PostArticle(c *gin.Context) {
 	var article app.Article
 	if err := c.ShouldBindJSON(&article); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
@@ -198,13 +199,13 @@ func (a ginHandler) PostArticle(c *gin.Context) {
 	res, err := a.appService.CreateArticle(&article)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"author": res,
+		"article": res,
 	})
 	return
 }
@@ -213,14 +214,14 @@ func (a ginHandler) PutArticle(c *gin.Context) {
 	var article app.Article
 	if err := c.ShouldBindJSON(&article); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 	res, err := a.appService.UpdateArticle(&article)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
@@ -237,6 +238,7 @@ func (a ginHandler) DeleteArticle(c *gin.Context) {
 		c.JSON(http.StatusCreated, gin.H{
 			"error": "article not deleted",
 		})
+		return
 	}
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "article deleted successfully",
@@ -258,10 +260,13 @@ func SetupGinRouter() *gin.Engine {
 			"message": "Welcome to Mode",
 		})
 	})
+	// Authentication
+	r.POST("/api/v1/users/login", handler.LoginUser)
+	r.POST("/api/v1/users/signup", handler.PostUser)
 
+	// Pull resources
 	r.GET("/api/v1/users", handler.GetUsers)
 	r.GET("/api/v1/users/:id", handler.GetUser)
-	r.POST("/api/v1/users", handler.PostUser)
 	r.PUT("/api/v1/users/:id", handler.PutUser)
 	r.DELETE("/api/v1/users/:id", handler.DeleteUser)
 	r.GET("/api/v1/articles", handler.GetArticles)

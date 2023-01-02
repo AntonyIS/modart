@@ -30,7 +30,7 @@ func newPostgresDB() (*gorm.DB, error) {
 	var ()
 
 	conn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		os.Getenv("DB_HOST2"),
+		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_NAME"),
@@ -67,7 +67,8 @@ func (r postgresRepository) CreateAuthor(author *app.Author) (*app.Author, error
 		return nil, errors.New("error harshing password")
 	}
 	author.Password = password
-	author.AuthorID = uuid.New().String()
+	author.Id = uuid.New().String()
+	author.Articles = []app.Article{}
 	res := r.db.Create(&author)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("attendee not created")
@@ -77,9 +78,9 @@ func (r postgresRepository) CreateAuthor(author *app.Author) (*app.Author, error
 
 func (r postgresRepository) ReadAuthor(id string) (*app.Author, error) {
 	var author app.Author
-	res := r.db.First(&author, id)
+	res := r.db.First(&author, "id = ?", id)
 	if res.RowsAffected == 0 {
-		return nil, nil
+		return nil, errors.New(fmt.Sprintf("author with ID :%s not found", id))
 	}
 	return &author, nil
 }
@@ -95,7 +96,7 @@ func (r postgresRepository) ReadAuthors() ([]*app.Author, error) {
 
 func (r postgresRepository) UpdateAuthor(author *app.Author) (*app.Author, error) {
 	var updateAuthor app.Author
-	result := r.db.Model(&updateAuthor).Where("id = ?", author.ID).Updates(author)
+	result := r.db.Model(&updateAuthor).Where("id = ?", author.Id).Updates(author)
 	if result.RowsAffected == 0 {
 		return &app.Author{}, errors.New("author not updated")
 	}
@@ -121,10 +122,10 @@ func (r postgresRepository) LoginAuthor(email string) (*app.Author, error) {
 }
 
 func (r postgresRepository) CreateArticle(article *app.Article) (*app.Article, error) {
-	article.ArticleID = uuid.New().String()
+	article.Id = uuid.New().String()
 	res := r.db.Create(&article)
 	if res.RowsAffected == 0 {
-		return nil, errors.New("attendee not created")
+		return nil, errors.New("article not created")
 	}
 
 	return article, nil
@@ -132,9 +133,11 @@ func (r postgresRepository) CreateArticle(article *app.Article) (*app.Article, e
 
 func (r postgresRepository) ReadArticle(id string) (*app.Article, error) {
 	var article app.Article
-	res := r.db.First(&article, id)
+
+	res := r.db.First(&article, "id = ?", id)
+
 	if res.RowsAffected == 0 {
-		return nil, nil
+		return nil, errors.New("article not found")
 	}
 	return &article, nil
 }
@@ -150,18 +153,18 @@ func (r postgresRepository) ReadArticles() ([]*app.Article, error) {
 
 func (r postgresRepository) UpdateArticle(article *app.Article) (*app.Article, error) {
 	var updateArticle app.Article
-	result := r.db.Model(&updateArticle).Where(article.ID).Updates(article)
+	result := r.db.Model(&updateArticle).Where(article.AuthorID).Updates(article)
 	if result.RowsAffected == 0 {
-		return &app.Article{}, errors.New("article not updated")
+		return &app.Article{}, errors.New(fmt.Sprintf("article with ID: %v not updated", article.AuthorID))
 	}
 	return &updateArticle, nil
 }
 
 func (r postgresRepository) DeleteArticle(id string) error {
 	var deletedArticle app.Article
-	result := r.db.Where(id).Delete(&deletedArticle)
+	result := r.db.Where("id = ?", id).Delete(&deletedArticle)
 	if result.RowsAffected == 0 {
-		return errors.New("article data not deleted")
+		return errors.New(fmt.Sprintf("article with ID: %s not found", id))
 	}
 	return nil
 }
