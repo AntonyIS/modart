@@ -4,7 +4,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// ID       string    `json:"id" gorm:"primarykey"`
+
 type Author struct {
 	Id        string    `json:"id" gorm:"primarykey"`
 	FirstName string    `json:"firstname"`
