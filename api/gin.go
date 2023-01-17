@@ -250,7 +250,7 @@ func InitGinRoute() *gin.Engine {
 	r := gin.Default()
 	// r.Use(cors.Default())
 
-	dbClient := repository.NewPostgresqlDB()
+	dbClient := repository.InitDynamoDB()
 	srv := app.NewItemService(dbClient)
 
 	handler := NewHandler(srv)
