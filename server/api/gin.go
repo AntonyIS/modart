@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"example.com/modart/app"
-	"example.com/modart/repository"
+	"example.com/server/app"
+	"example.com/server/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 )
@@ -65,14 +65,14 @@ func (a ginHandler) GetUser(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"": author,
+		"author": author,
 	})
 	return
 }
 
 func (a ginHandler) LoginUser(c *gin.Context) {
 	email := c.Param("email")
-	author, err := a.appService.LoginAuthor(email)
+	author, err := a.appService.ReadAuthor(email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err.Error(),

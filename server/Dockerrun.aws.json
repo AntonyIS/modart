@@ -1,7 +1,7 @@
 {
     "AWSEBDockerrunVersion": "1",
     "Image": {
-      "Name": "username/beanstalk-flask",
+      "Name": "024874482240.dkr.ecr.eu-central-1.amazonaws.com/modart",
       "Update": "true"
     },
     "Ports": [

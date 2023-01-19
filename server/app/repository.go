@@ -1,7 +1,6 @@
 package app
 
 type AppRepository interface {
-	LoginAuthor(email string) (*Author, error)
 	CreateAuthor(author *Author) (*Author, error)
 	ReadAuthor(id string) (*Author, error)
 	ReadAuthors() ([]*Author, error)

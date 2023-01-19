@@ -32,10 +32,10 @@ func (a *appService) CreateAuthor(author *Author) (*Author, error) {
 	return a.appRepo.CreateAuthor(author)
 }
 
-func (a *appService) LoginAuthor(email string) (*Author, error) {
-	// author.ID = uuid.New().String()
-	return a.appRepo.LoginAuthor(email)
-}
+// func (a *appService) LoginAuthor(email string) (*Author, error) {
+// 	// author.ID = uuid.New().String()
+// 	return a.appRepo.LoginAuthor(email)
+// }
 
 func (a *appService) ReadAuthor(id string) (*Author, error) {
 	return a.appRepo.ReadAuthor(id)

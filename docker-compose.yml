@@ -1,6 +1,7 @@
 version: '3.8'
 services:
-  modart:
+  server:
     image: "024874482240.dkr.ecr.eu-central-1.amazonaws.com/modart"
     ports:
-      - "80:5000"
+      - "5000:5000"
+  

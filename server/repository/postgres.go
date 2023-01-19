@@ -7,7 +7,8 @@ import (
 	"os"
 	"time"
 
-	"example.com/modart/app"
+	app "example.com/server/app"
+
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"

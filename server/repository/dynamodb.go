@@ -6,7 +6,8 @@ import (
 	"log"
 	"os"
 
-	app "example.com/modart/app"
+	app "example.com/server/app"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -158,7 +159,6 @@ func (db *Database) DeleteAuthor(id string) error {
 	}
 	return nil
 }
-
 func (db *Database) CreateArticle(article *app.Article) (*app.Article, error) {
 	article.Id = uuid.New().String()
 	entityParsed, err := dynamodbattribute.MarshalMap(article)
