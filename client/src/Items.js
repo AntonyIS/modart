@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 
 class Items extends Component {
+    
     state = {
         users : [],
     };
@@ -12,7 +13,8 @@ class Items extends Component {
     }
 
     async fetchusers(){
-        const users = await axios.get("/api/v1/users");
+        const users = await axios.get("/users");
+        console.log(users)
         this.setState({users : users.data})
     }
 
@@ -20,12 +22,14 @@ class Items extends Component {
         return this.state.users.map(({firstname})=> firstname)
     }
     render (){
+       return(
         <div>
-            <h3>Users</h3>
-            {
-                this.renderUsers()
-            }
-        </div>
+        <h3>Users</h3>
+        {
+            this.renderUsers()
+        }
+    </div>
+       )
     }
 }
 
