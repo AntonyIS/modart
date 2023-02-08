@@ -37,7 +37,7 @@ func NewHandler(appSrv app.AppService) GinRoutehandler {
 
 // Author handler
 func (a ginHandler) GetUsers(c *gin.Context) {
-	authors, err := a.appService.ReadAuthors()
+	users, err := a.appService.ReadAuthors()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err.Error(),
@@ -45,27 +45,27 @@ func (a ginHandler) GetUsers(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"authors": authors,
+		"users": users,
 	})
 }
 
 func (a ginHandler) GetUser(c *gin.Context) {
 	id := c.Param("id")
-	author, err := a.appService.ReadAuthor(id)
+	user, err := a.appService.ReadAuthor(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err.Error(),
 		})
 		return
 	}
-	if author == nil {
+	if user == nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"message": "author not found",
+			"message": "user not found",
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"author": author,
+		"user": user,
 	})
 	return
 }
@@ -100,14 +100,14 @@ func (a ginHandler) LoginUser(c *gin.Context) {
 }
 
 func (a ginHandler) PostUser(c *gin.Context) {
-	var author app.Author
-	if err := c.ShouldBindJSON(&author); err != nil {
+	var user app.Author
+	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	res, err := a.appService.CreateAuthor(&author)
+	res, err := a.appService.CreateAuthor(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -122,14 +122,14 @@ func (a ginHandler) PostUser(c *gin.Context) {
 }
 
 func (a ginHandler) PutUser(c *gin.Context) {
-	var author app.Author
-	if err := c.ShouldBindJSON(&author); err != nil {
+	var user app.Author
+	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	res, err := a.appService.UpdateAuthor(&author)
+	res, err := a.appService.UpdateAuthor(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -147,7 +147,7 @@ func (a ginHandler) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 	res := a.appService.DeleteAuthor(id)
 	c.JSON(http.StatusCreated, gin.H{
-		"author": res,
+		"user": res,
 	})
 }
 
@@ -245,6 +245,7 @@ func (a ginHandler) DeleteArticle(c *gin.Context) {
 	})
 
 }
+
 func InitGinRoute() *gin.Engine {
 	// gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -261,19 +262,18 @@ func InitGinRoute() *gin.Engine {
 		})
 	})
 	// Authentication
-	r.POST("/api/v1/users/login", handler.LoginUser)
-	r.POST("/api/v1/users/signup", handler.PostUser)
-
+	r.POST("/users/login", handler.LoginUser)
+	r.POST("/users/signup", handler.PostUser)
 	// Pull resources
-	r.GET("/api/v1/users", handler.GetUsers)
-	r.GET("/api/v1/users/:id", handler.GetUser)
-	r.PUT("/api/v1/users/:id", handler.PutUser)
-	r.DELETE("/api/v1/users/:id", handler.DeleteUser)
-	r.GET("/api/v1/articles", handler.GetArticles)
-	r.GET("/api/v1/articles/:id", handler.GetArticle)
-	r.POST("/api/v1/articles", handler.PostArticle)
-	r.PUT("/api/v1/articles/:id", handler.PutArticle)
-	r.DELETE("/api/v1/articles/:id", handler.DeleteArticle)
+	r.GET("/users", handler.GetUsers)
+	r.GET("/users/:id", handler.GetUser)
+	r.PUT("/users/:id", handler.PutUser)
+	r.DELETE("/users/:id", handler.DeleteUser)
+	r.GET("/articles", handler.GetArticles)
+	r.GET("/articles/:id", handler.GetArticle)
+	r.POST("/articles", handler.PostArticle)
+	r.PUT("/articles/:id", handler.PutArticle)
+	r.DELETE("/articles/:id", handler.DeleteArticle)
 
 	return r
 }
